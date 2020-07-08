@@ -11,6 +11,8 @@ import android.location.Location;
 import android.os.Bundle;
 import android.os.Looper;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,15 +35,28 @@ import static com.google.android.gms.location.LocationServices.getFusedLocationP
 public class MainActivity extends AppCompatActivity {
 
     private LocationRequest mLocationRequest;
+    FusedLocationProviderClient mFusedLocationClient;
 
     private long UPDATE_INTERVAL = 10 * 1000;  /* 10 secs */
     private long FASTEST_INTERVAL = 2000; /* 2 sec */
+    TextView txtlocation;
+    LocationCallback mLocationCallback;
+    Button button;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        startLocationUpdates();
+        txtlocation = findViewById(R.id.txtlocation);
+        button = findViewById(R.id.button);
+
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startLocationUpdates();
+            }
+        });
+
     }
 
     protected void startLocationUpdates() {
@@ -78,6 +93,7 @@ public class MainActivity extends AppCompatActivity {
                     public void onLocationResult(LocationResult locationResult) {
                         // do work here
                         onLocationChanged(locationResult.getLastLocation());
+
                     }
                 },
                 Looper.myLooper());
@@ -91,6 +107,8 @@ public class MainActivity extends AppCompatActivity {
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
         // You can now create a LatLng Object for use with maps
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+        txtlocation.setText(latLng+"");
+
     }
 
     public void getLastLocation() {
