@@ -41,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
     private long FASTEST_INTERVAL = 2000; /* 2 sec */
     TextView txtlocation;
     LocationCallback mLocationCallback;
+
     Button button;
 
     @Override
@@ -49,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         txtlocation = findViewById(R.id.txtlocation);
         button = findViewById(R.id.button);
-
+        checkPermissions();
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -144,5 +145,30 @@ public class MainActivity extends AppCompatActivity {
                 });
     }
 
+    private boolean checkPermissions() {
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            return true;
+        } else {
+            requestPermissions();
+            return false;
+        }
+    }
+
+    private void requestPermissions() {
+        ActivityCompat.requestPermissions(this,
+                new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mFusedLocationClient.flushLocations();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
 }
 
